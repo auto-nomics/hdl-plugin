@@ -35,7 +35,10 @@ env_flag <- function(name) {
   if (value %in% c("true", "1")) {
     return(TRUE)
   }
-  if (value %in% c("false", "0")) {
+  # The host renders boolean `false` as an empty value (presence
+  # semantics: `[ -n "$VAR" ]`-style consumers see unset), so an empty
+  # string is an explicit false rather than a malformed value.
+  if (value %in% c("false", "0", "")) {
     return(FALSE)
   }
   stop(name, " must be true or false, got: ", value)
